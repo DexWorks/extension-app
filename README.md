@@ -111,25 +111,23 @@ Assuming this app should run in browser environment:
         userStylesheets: new Set()
     }),
 
-    pages: {
-        'http://example.com:9000/test.html': {
-            // LiveStyle is enabled for given page
-            enabled: true,
+    pages: new Map().set('http://example.com:9000/test.html', {
+        // LiveStyle is enabled for given page
+        enabled: true,
 
-            // Update direction, see `PAGE.DIRECTION_*` in action names
-            direction: 'both',
+        // Update direction, see `PAGE.DIRECTION_*` in action names
+        direction: 'both',
 
-            // When this session was used last time,
-            // used to auto-remove old sessions
-            lastUsed: 1456088041245,
+        // When this session was used last time,
+        // used to auto-remove old sessions
+        lastUsed: 1456088041245,
 
-            // Browser-to-editor file mapping, hand-picked by user
-            userMapping: {},
+        // Browser-to-editor file mapping, hand-picked by user
+        userMapping: {},
 
-            // IDs of user-generated stylesheets
-            userStylesheets: []
-        }
-    },
+        // IDs of user-generated stylesheets
+        userStylesheets: []
+    }),
 
     // Remote View state and sessions
     removeView: {

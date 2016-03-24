@@ -67,4 +67,11 @@ describe('Utils', () => {
 		assert(obj.a2.b2 === replaced.a2.b2);
 		assert(replaced.a3 === 'baz');
     });
+
+    it('is same set', () => {
+        assert.equal(utils.isSameSet(new Set(['a', 'b']), new Set(['a', 'b'])), true);
+        assert.equal(utils.isSameSet(new Set(['a', 'b']), new Set(['b', 'a'])), true);
+        assert.equal(utils.isSameSet(new Set(['a', 'b']), new Set(['b', 'c', 'a'])), false);
+        assert.equal(utils.isSameSet(['a', 'b'], new Set(['a', 'b'])), false);
+    });
 });
