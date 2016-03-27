@@ -89,7 +89,7 @@ describe('Editors reducer', () => {
         emit('editor-connect', editor2);
 
         var state1 = store.getState();
-        emit('editor-files', {id: editor1.id, files: editor1.files.slice()});
+        emit('editor-files', {id: editor1.id, files: editor1.files.slice().reverse()});
         var state2 = store.getState();
 
         assert.equal(state1.files, state2.files);
