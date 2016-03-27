@@ -1,4 +1,8 @@
 {
     "presets": ["es2015"],
-    "plugins": ["transform-object-rest-spread", "transform-node-env-inline"]
+    "plugins": [
+        "transform-object-rest-spread",
+        "transform-node-env-inline",
+        ["transform-es2015-for-of", {"loose": true}]
+    ]
 }
