@@ -81,22 +81,24 @@ describe('Sessions reducer', () => {
 
     it('manage stylesheets', () => {
         var id = 'sample-session';
+        var stylesheet1 = 'css1';
+        var stylesheet2 = 'css2';
 
         // create session first
         dispatch({type: SESSION.TOGGLE_ENABLED, id});
 
-        dispatch({type: SESSION.ADD_USER_STYLESHEET, id});
+        dispatch({type: SESSION.ADD_USER_STYLESHEET, id, stylesheet: stylesheet1});
         var state = store.getState();
         assert.equal(state.get(id).userStylesheets.size, 1);
-        var stylesheet = Array.from(state.get(id).userStylesheets)[0];
-        assert(/^css\d+$/.test(stylesheet));
+        assert.equal(Array.from(state.get(id).userStylesheets)[0], stylesheet1);
 
-        dispatch({type: SESSION.ADD_USER_STYLESHEET, id});
+        dispatch({type: SESSION.ADD_USER_STYLESHEET, id, stylesheet: stylesheet2});
         state = store.getState();
         assert.equal(state.get(id).userStylesheets.size, 2);
 
-        dispatch({type: SESSION.REMOVE_USER_STYLESHEET, id, stylesheet});
+        dispatch({type: SESSION.REMOVE_USER_STYLESHEET, id, stylesheet: stylesheet1});
         state = store.getState();
         assert.equal(state.get(id).userStylesheets.size, 1);
+        assert.equal(Array.from(state.get(id).userStylesheets)[0], stylesheet2);
     });
 });
