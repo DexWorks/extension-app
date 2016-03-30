@@ -67,21 +67,4 @@ describe('Utils', () => {
 		assert(obj.a2.b2 === replaced.a2.b2);
 		assert(replaced.a3 === 'baz');
     });
-
-    it('is same set', () => {
-        assert.equal(utils.isSameSet(new Set(['a', 'b']), new Set(['a', 'b'])), true);
-        assert.equal(utils.isSameSet(new Set(['a', 'b']), new Set(['b', 'a'])), true);
-        assert.equal(utils.isSameSet(new Set(['a', 'b']), new Set(['b', 'c', 'a'])), false);
-        assert.equal(utils.isSameSet(['a', 'b'], new Set(['a', 'b'])), false);
-    });
-
-	it('is same map', () => {
-		var map = obj => Object.keys(obj).reduce((out, k) => out.set(k, obj[k]), new Map());
-
-        assert.equal(utils.isSameMap(map({a: 1, b: 2}), map({a: 1, b: 2})), true);
-        assert.equal(utils.isSameMap(map({a: 1, b: 2}), map({b: 2, a: 1})), true);
-        assert.equal(utils.isSameMap(map({a: 1, b: 2}), map({a: 1, b: 2, c: 3})), false);
-        assert.equal(utils.isSameMap(map({a: 1, b: 2}), map({a: 1, b: 3})), false);
-        assert.equal(utils.isSameMap({a: 1, b: 2}, map({a: 1, b: 2})), false);
-    });
 });
