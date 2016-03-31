@@ -35,7 +35,7 @@ Assuming this app should run in browser environment:
     // Map of tabs currently opened in browser.
     // Each tab must be identified by unique `tabId` and contain
     // `url` and `origin` properties
-    tabs: new Map(tabId, {
+    tabs: new Map('tabId', {
         url: 'http://localhost:8000/test/index.html',
         origin: 'http://localhost:8000',
 
@@ -112,7 +112,7 @@ Assuming this app should run in browser environment:
     }),
 
     // Remote View state and sessions
-    removeView: {
+    remoteView: {
         // Wether current browser client is connected to LiveStyle App
         connected: true,
 

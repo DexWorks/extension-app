@@ -67,4 +67,21 @@ describe('Utils', () => {
 		assert(obj.a2.b2 === replaced.a2.b2);
 		assert(replaced.a3 === 'baz');
     });
+
+    it('has value', () => {
+        var has = utils.hasValue;
+        var map = utils.makeMap;
+
+        assert(has([1, 2], 1));
+        assert(!has([1, 2], 3));
+
+        assert(has(new Set([1, 2]), 1));
+        assert(!has(new Set([1, 2]), 3));
+
+        assert(has({a: 1, b: 2}, 1));
+        assert(!has({a: 1, b: 2}, 3));
+
+        assert(has(map({a: 1, b: 2}), 1));
+        assert(!has(map({a: 1, b: 2}), 3));
+    });
 });
