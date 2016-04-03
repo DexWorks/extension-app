@@ -134,4 +134,51 @@ describe('Tabs reducer', () => {
         tabItem = store.getState().tabs.get(tabId);
         assert.equal(tabItem.session.mapping.get('http://localhost/bar.css'), 'project/bar.scss');
     });
+
+    it('update tab list', () => {
+        dispatch({
+            type: TAB.UPDATE_LIST,
+            tabs: new Map()
+            .set(1, {
+                origin: 'http://localhost',
+                url: 'http://localhost/test.html'
+            })
+            .set(2, {
+                origin: 'http://localhost:9000',
+                url: 'http://localhost:9000/test.html'
+            })
+        });
+
+        var tabs = store.getState().tabs;
+        assert.equal(tabs.size, 2);
+        assert.equal(tabs.get(1).origin, 'http://localhost');
+        assert.equal(tabs.get(1).session.id, 'http://localhost/test.html');
+        assert.equal(tabs.get(2).origin, 'http://localhost:9000');
+        assert.equal(tabs.get(2).session, null);
+
+        var tab1 = tabs.get(1);
+
+        dispatch({
+            type: TAB.UPDATE_LIST,
+            tabs: new Map()
+            .set(1, {
+                origin: 'http://localhost',
+                url: 'http://localhost/test.html'
+            })
+            .set(3, {
+                origin: 'http://localhost:9001',
+                url: 'http://localhost:9001/test.html'
+            })
+        });
+
+        tabs = store.getState().tabs;
+        assert.equal(tabs.size, 2);
+        // Tab object for id 1 should be the same
+        assert.equal(tabs.get(1), tab1);
+        assert.equal(tabs.get(1).origin, 'http://localhost');
+        assert.equal(tabs.get(1).session.id, 'http://localhost/test.html');
+        assert.equal(tabs.get(2), undefined);
+        assert.equal(tabs.get(3).origin, 'http://localhost:9001');
+        assert.equal(tabs.get(3).session, null);
+    });
 });
