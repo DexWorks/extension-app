@@ -125,7 +125,7 @@ Assuming this app should run in browser environment:
             publicId: 'rv.livestyle.io',
             localSite: 'http://localhost:8080',
             connectUrl: 'http://livestyle.io:9001',
-            expiresAt: Date.now(),
+            expiresAt: Date.now()
         })
     }
 }
