@@ -252,4 +252,80 @@ describe('Tabs reducer', () => {
         assert.equal(tabs.get(3).origin, 'http://localhost:9001');
         assert.equal(tabs.get(3).session, null);
     });
+
+    it('patches', () => {
+        function parse(props) {
+            return (props || '').split(';').filter(Boolean).map(item => {
+                var parts = item.split(':');
+                return {
+                    name: parts[0].trim(),
+                    value: parts[1].trim()
+                };
+            });
+        };
+
+        function patch(updated, removed, path) {
+            var parts = (path || 'div|1').split('|');
+            return {
+                path: [[parts[0].trim(), parts[1] || 1]],
+                action: 'update',
+                update: parse(updated),
+                remove: parse(removed)
+            }
+        };
+
+        // create tab first
+        dispatch({
+            type: TAB.UPDATE_LIST,
+            tabs: {[tabId]: tab}
+        });
+
+        // save resource patches for given stylesheet in tab session
+        dispatch({
+            type: TAB.SAVE_PATCHES,
+            id: tabId,
+            uri: 'http://localhost/style.css',
+            patches: [patch('position:relative')]
+        });
+
+        var tabItem = store.getState().tabs.get(tabId);
+        var patches = tabItem.session.patches.get('http://localhost/style.css');
+        assert.equal(patches.length, 1);
+        assert.deepEqual(patches[0].update, [{name: 'position', value: 'relative'}]);
+
+        // add more patches
+        dispatch({
+            type: TAB.SAVE_PATCHES,
+            id: tabId,
+            uri: 'http://localhost/style.css',
+            patches: [patch('position:absolute')]
+        });
+        dispatch({
+            type: TAB.SAVE_PATCHES,
+            id: tabId,
+            uri: 'http://localhost/module.css',
+            patches: [patch('padding:10px')]
+        });
+
+        tabItem = store.getState().tabs.get(tabId);
+        assert.equal(tabItem.session.patches.size, 2);
+
+        patches = tabItem.session.patches.get('http://localhost/style.css');
+        // patches is this resource should be condensed
+        assert.equal(patches.length, 1);
+        assert.deepEqual(patches[0].update, [{name: 'position', value: 'absolute'}]);
+
+        // remove patches for resource
+        dispatch({
+            type: TAB.CLEAR_PATCHES,
+            id: tabId,
+            uri: 'http://localhost/style.css'
+        });
+
+        tabItem = store.getState().tabs.get(tabId);
+        assert.equal(tabItem.session.patches.size, 1);
+        patches = tabItem.session.patches.get('http://localhost/module.css');
+        assert.equal(patches.length, 1);
+        assert.deepEqual(patches[0].update, [{name: 'padding', value: '10px'}]);
+    });
 });
