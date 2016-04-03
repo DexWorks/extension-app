@@ -328,4 +328,29 @@ describe('Tabs reducer', () => {
         assert.equal(patches.length, 1);
         assert.deepEqual(patches[0].update, [{name: 'padding', value: '10px'}]);
     });
+
+    it('requested unsaved files', () => {
+        dispatch({
+            type: TAB.UPDATE_LIST,
+            tabs: {[tabId]: tab}
+        });
+
+        dispatch({
+            type: TAB.ADD_REQUESTED_UNSAVED_FILES,
+            id: tabId,
+            files: ['file1.css', 'file2.css']
+        });
+
+        var session = store.getState().tabs.get(tabId).session;
+        assert.deepEqual(Array.from(session.requestedUnsavedFiles), ['file1.css', 'file2.css']);
+
+        dispatch({
+            type: TAB.ADD_REQUESTED_UNSAVED_FILES,
+            id: tabId,
+            files: ['file1.css', 'file3.css']
+        });
+
+        session = store.getState().tabs.get(tabId).session;
+        assert.deepEqual(Array.from(session.requestedUnsavedFiles), ['file1.css', 'file2.css', 'file3.css']);
+    });
 });
