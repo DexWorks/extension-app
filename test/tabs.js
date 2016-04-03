@@ -7,8 +7,10 @@ const assert = require('assert');
 const redux = require('redux');
 require('babel-register');
 const reducer = require('../lib/reducers').default;
-const TAB = require('../lib/action-names').TAB;
-const EDITOR = require('../lib/action-names').EDITOR;
+const actionNames = require('../lib/action-names');
+const TAB = actionNames.TAB;
+const EDITOR = actionNames.EDITOR;
+const SESSION = actionNames.SESSION;
 
 describe('Tabs reducer', () => {
     var store, dispatch;
@@ -165,6 +167,43 @@ describe('Tabs reducer', () => {
 
         tabItem = store.getState().tabs.get(tabId);
         assert.equal(tabItem.session.mapping.get('http://localhost/bar.css'), 'project/bar.scss');
+    });
+
+    it('re-map files on manual mapping update', () => {
+        dispatch({
+            type: TAB.UPDATE_LIST,
+            tabs: {[tabId]: tab}
+        });
+
+        dispatch({
+            type: TAB.SET_STYLESHEET_DATA,
+            id: tabId,
+            items: ['http://localhost/style.css']
+        });
+
+        var tabItem = store.getState().tabs.get(tabId);
+        assert.equal(tabItem.session.mapping.get('http://localhost/style.css'), 'dir/style.css');
+
+        dispatch({
+            type: SESSION.UPDATE_FILE_MAPPING,
+            id: tab.url,
+            browser: 'http://localhost/style.css',
+            editor: 'dir/module.less'
+        });
+
+        tabItem = store.getState().tabs.get(tabId);
+        assert.equal(tabItem.session.mapping.get('http://localhost/style.css'), 'dir/module.less');
+
+        // map to non-existing stylesheet: should fall back to auto mapping
+        dispatch({
+            type: SESSION.UPDATE_FILE_MAPPING,
+            id: tab.url,
+            browser: 'http://localhost/style.css',
+            editor: 'foo/bar.scss'
+        });
+
+        tabItem = store.getState().tabs.get(tabId);
+        assert.equal(tabItem.session.mapping.get('http://localhost/style.css'), 'dir/style.css');
     });
 
     it('update tab list', () => {
