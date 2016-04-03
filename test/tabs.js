@@ -353,4 +353,18 @@ describe('Tabs reducer', () => {
         session = store.getState().tabs.get(tabId).session;
         assert.deepEqual(Array.from(session.requestedUnsavedFiles), ['file1.css', 'file2.css', 'file3.css']);
     });
+
+    it('destroy tab session on when disabled', () => {
+        dispatch({
+            type: TAB.UPDATE_LIST,
+            tabs: {[tabId]: tab}
+        });
+        assert(store.getState().tabs.get(tabId).session);
+
+        dispatch({
+            type: SESSION.TOGGLE_ENABLED,
+            id: tab.url
+        });
+        assert.equal(store.getState().tabs.get(tabId).session, null);
+    });
 });
