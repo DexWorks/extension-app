@@ -107,6 +107,38 @@ describe('Tabs reducer', () => {
         assert.equal(tabItem.session.mapping.get('http://localhost/module.css'), 'dir/module.less');
     });
 
+    it('update stylesheet item', () => {
+        dispatch({
+            type: TAB.UPDATE_LIST,
+            tabs: {[tabId]: tab}
+        });
+
+        dispatch({
+            type: TAB.SET_STYLESHEET_DATA,
+            id: tabId,
+            items: new Map()
+            .set('foo', 'bar')
+            .set('foo2', 'bar2')
+        });
+
+        var ss = store.getState().tabs.get(tabId).stylesheets['default'];
+        assert.equal(ss.size, 2);
+        assert.equal(ss.get('foo'), 'bar');
+        assert.equal(ss.get('foo2'), 'bar2');
+
+        dispatch({
+            type: TAB.UPDATE_STYLESHEET_ITEM,
+            id: tabId,
+            itemId: 'foo',
+            itemValue: 'baz'
+        });
+
+        ss = store.getState().tabs.get(tabId).stylesheets['default'];
+        assert.equal(ss.size, 2);
+        assert.equal(ss.get('foo'), 'baz');
+        assert.equal(ss.get('foo2'), 'bar2');
+    });
+
     it('re-map files on editors change', () => {
         dispatch({
             type: TAB.UPDATE_LIST,
