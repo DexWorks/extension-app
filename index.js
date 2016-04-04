@@ -3,6 +3,7 @@
 import {createStore, applyMiddleware} from 'redux';
 import createLogger from 'redux-logger';
 import reducers from './lib/reducers';
+import listeners from './lib/listeners';
 import {deepGet, iterate} from './lib/utils';
 
 export default function createApp(client, options={}) {
@@ -12,7 +13,7 @@ export default function createApp(client, options={}) {
     }
 
     // @see README.md for model reference
-    const store = createStore(reducers, {
+    var store = createStore(reducers, {
         editors: {
             list: new Map(),
             files: new Set()
@@ -25,6 +26,8 @@ export default function createApp(client, options={}) {
             sessions: new Map()
         }
     }, applyMiddleware(...middlewares));
+
+    var unsubscribe = listeners(client, options);
 
     return {
         /**
@@ -108,6 +111,10 @@ export default function createApp(client, options={}) {
 
         getStateValue(key, state=getState()) {
             return deepGet(state, key);
+        },
+
+        destroy() {
+            unsubscribe();
         }
     };
 };
