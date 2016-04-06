@@ -5,6 +5,7 @@ import createLogger from 'redux-logger';
 import reducers from './lib/reducers';
 import listeners from './lib/listeners';
 import {deepGet, iterate} from './lib/utils';
+import {forEditor, forBrowser} from './lib/diff';
 
 export default function createApp(client, options={}) {
     var middlewares = [];
@@ -111,6 +112,14 @@ export default function createApp(client, options={}) {
 
         getStateValue(key, state=getState()) {
             return deepGet(state, key);
+        },
+
+        diffForEditor(diff) {
+            return forEditor(this.getState(), diff);
+        },
+
+        diffForBrowser(diff) {
+            return forBrowser(this.getState(), diff);
         },
 
         destroy() {
