@@ -71,7 +71,14 @@ describe('Tabs reducer', () => {
     it('update & map stylesheets', () => {
         dispatch({
             type: TAB.UPDATE_LIST,
-            tabs: {[tabId]: tab}
+            tabs: {
+                [tabId]: {
+                    ...tab,
+                    stylesheets: {
+                        cssom: new Set(['http://localhost/module.css'])
+                    }
+                }
+            }
         });
 
         var prevState = store.getState();
@@ -81,13 +88,6 @@ describe('Tabs reducer', () => {
             type: TAB.SET_STYLESHEET_DATA,
             id: tabId,
             items: ['http://localhost/style.css']
-        });
-
-        dispatch({
-            type: TAB.SET_STYLESHEET_DATA,
-            id: tabId,
-            items: new Set(['http://localhost/module.css']),
-            zone: 'cssom'
         });
 
         dispatch({
@@ -106,7 +106,7 @@ describe('Tabs reducer', () => {
 
         // collect stylesheets from all zones
         assert.deepEqual(Array.from(tabItem.session.stylesheets),
-            ['http://localhost/style.css', 'http://localhost/module.css', 'http://localhost/bar.css']);
+            ['http://localhost/module.css', 'http://localhost/style.css', 'http://localhost/bar.css']);
 
         // auto map browser files with editor ones
         assert.equal(tabItem.session.mapping.get('http://localhost/style.css'), 'dir/style.css');
