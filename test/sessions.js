@@ -101,4 +101,44 @@ describe('Sessions reducer', () => {
         assert.equal(state.get(id).userStylesheets.size, 1);
         assert.equal(Array.from(state.get(id).userStylesheets)[0], stylesheet2);
     });
+
+    it('bulk load', () => {
+        dispatch({type: SESSION.TOGGLE_ENABLED, id: 'sample-session'});
+
+        var state = store.getState();
+        assert.equal(state.size, 1);
+        assert.equal(state.get('sample-session').enabled, true);
+
+        dispatch({
+            type: SESSION.LOAD,
+            sessions: {
+                s1: {
+                    enabled: true,
+                    direction: SESSION.DIRECTION_BOTH,
+                    lastUsed: 1456088041245,
+                    userMapping: {'foo.css': 'bar.css'},
+                    userStylesheets: ['style1.css', 'style2.css']
+                },
+                s2: {
+                    enabled: false,
+                    direction: SESSION.DIRECTION_TO_BROWSER,
+                    lastUsed: 1456088041246,
+                    userMapping: {},
+                    userStylesheets: []
+                }
+            }
+        });
+
+        state = store.getState();
+        assert.equal(state.size, 2);
+        assert.deepEqual(Array.from(state.keys()), ['s1', 's2']);
+        assert.equal(state.get('s1').enabled, true);
+        assert.equal(state.get('s1').userMapping.size, 1);
+        assert.equal(state.get('s1').userMapping.get('foo.css'), 'bar.css');
+        assert.equal(state.get('s1').userStylesheets.size, 2);
+        assert.deepEqual(Array.from(state.get('s1').userStylesheets), ['style1.css', 'style2.css']);
+
+        assert.equal(state.get('s2').enabled, false);
+        assert.equal(state.get('s2').direction, SESSION.DIRECTION_TO_BROWSER);
+    });
 });

@@ -53,7 +53,7 @@ export default function createApp(client, options={}) {
                     nextState = select(nextState);
                 } else if (typeof select === 'string') {
                     // watching for a specific key in store
-                    nextState = getStateValue(select, nextState);
+                    nextState = deepGet(select, nextState);
                 }
                 if (nextState !== currentState) {
                     currentState = nextState;
@@ -80,7 +80,7 @@ export default function createApp(client, options={}) {
 
             let currentState = {};
             return store.subscribe(() => {
-                let nextState = getStateValue(rootKey);
+                let nextState = deepGet(rootKey);
                 // find out which object were updated and invoke `onChange`
                 // handler for each
                 if (currentState !== nextState) {
