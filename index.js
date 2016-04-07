@@ -31,6 +31,7 @@ export default function createApp(client, options={}) {
     var unsubscribe = listeners(client, options);
 
     return {
+        client,
         /**
          * Send message to update store
          * @param  {Object} data Message payload
