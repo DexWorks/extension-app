@@ -6,6 +6,7 @@ import reducers from './lib/reducers';
 import listeners from './lib/listeners';
 import {deepGet, iterate} from './lib/utils';
 import {forEditor, forBrowser} from './lib/diff';
+import {createSession, destroySession} from './lib/remote-view';
 
 export default function createApp(client, options={}) {
     var middlewares = [];
@@ -121,6 +122,14 @@ export default function createApp(client, options={}) {
 
         diffForBrowser(diff) {
             return forBrowser(this.getState(), diff);
+        },
+
+        createRemoteViewSession(data) {
+            return createSession(client, data);
+        },
+
+        destroyRemoteViewSession(localSite) {
+            return destroySession(client, localSite);
         },
 
         destroy() {
