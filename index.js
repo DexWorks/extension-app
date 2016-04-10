@@ -22,14 +22,13 @@ export default function createApp(client, options={}) {
         },
         tabs: new Map(),
         sessions: new Map(),
-        pages: new Map(),
-        removeView: {
+        remoteView: {
             connected: false,
             sessions: new Map()
         }
     }, applyMiddleware(...middlewares));
 
-    var unsubscribe = listeners(client, options);
+    var unsubscribe = listeners(client, store, options);
 
     return {
         client,
@@ -51,12 +50,12 @@ export default function createApp(client, options={}) {
         subscribe(onChange, select) {
             let currentState;
             return store.subscribe(() => {
-                let nextState = getState();
+                let nextState = this.getState();
                 if (typeof select === 'function') {
                     nextState = select(nextState);
                 } else if (typeof select === 'string') {
                     // watching for a specific key in store
-                    nextState = deepGet(select, nextState);
+                    nextState = deepGet(nextState, select);
                 }
                 if (nextState !== currentState) {
                     currentState = nextState;
@@ -83,7 +82,7 @@ export default function createApp(client, options={}) {
 
             let currentState = {};
             return store.subscribe(() => {
-                let nextState = deepGet(rootKey);
+                let nextState = deepGet(this.getState(), rootKey);
                 // find out which object were updated and invoke `onChange`
                 // handler for each
                 if (currentState !== nextState) {
@@ -112,7 +111,7 @@ export default function createApp(client, options={}) {
             return store.getState();
         },
 
-        getStateValue(key, state=getState()) {
+        getStateValue(key, state=this.getState()) {
             return deepGet(state, key);
         },
 
