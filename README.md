@@ -51,9 +51,6 @@ Assuming this app should run in browser environment:
             .set('http://localhost:8000/test/index.html', 'body {...}')
         },
 
-        // Points to Remote View session, available for current tab
-        remoteView: 'http://localhost:8080',
-
         // If there’s matching LiveStyle session, the `session` key
         // will hold ID reference to persistent LiveStyle session and
         // local user data
@@ -88,7 +85,7 @@ Assuming this app should run in browser environment:
     }),
 
     // LiveStyle sessions. Each session is identified by ID (mostly
-    // page URL) this ID is then mapped to opened tab
+    // page URL), this ID is then mapped to opened tab
     sessions: new Map().set('http://localhost:8000/test/index.html', {
         // LiveStyle is enabled/disabled by user for this session
         enabled: true,
@@ -116,13 +113,23 @@ Assuming this app should run in browser environment:
         // Wether current browser client is connected to LiveStyle App
         connected: true,
 
-        // Currently active Remote View sessions,
-        // key is a session origin
+        // Currently active Remote View sessions, key is an `origin` of tab
+        // item. Multiple tabs with same origin can point to single Remote View
+        // session
         sessions: new Map().set('http://localhost:8080', {
             // current session connection state,
             // see REMOTE_VIEW.STATE_* action name
             state: 'connected',
             publicId: 'rv.livestyle.io',
+
+            // Back reference to session key, the website origin
+            origin: 'http://localhost:8080',
+
+            // A domain for locally available URL of the website with `origin`
+            // root. Same as `origin` for `http(s)://` websites but will
+            // differ for origins with `file://` protocol: in this case
+            // Remote View app will create a local HTTP server which document
+            // root points to `origin` folder
             localSite: 'http://localhost:8080',
             connectUrl: 'http://livestyle.io:9001',
             expiresAt: Date.now()

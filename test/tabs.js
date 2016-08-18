@@ -42,11 +42,7 @@ describe('Tabs reducer', () => {
                 direction: 'to editor',
                 userMapping: new Map(),
                 userStylesheets: new Set()
-            }),
-            remoteView: {
-                sessions: new Map()
-                .set('http://localhost:12345', {})
-            }
+            })
         });
         dispatch = action => store.dispatch(action);
     });
@@ -370,22 +366,5 @@ describe('Tabs reducer', () => {
             id: tab.url
         });
         assert.equal(store.getState().tabs.get(tabId).session, null);
-    });
-
-    it('map Remote View session', () => {
-        dispatch({
-            type: TAB.UPDATE_LIST,
-            tabs: {
-                [tabId]: tab,
-                tab2: {
-                    origin: 'http://localhost:12345',
-                    url: 'http://localhost:12345/index.html'
-                }
-            }
-        });
-
-        var tabs = store.getState().tabs;
-        assert.equal(tabs.get(tabId).remoteView, null);
-        assert.equal(tabs.get('tab2').remoteView, 'http://localhost:12345');
     });
 });
