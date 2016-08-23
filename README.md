@@ -114,7 +114,7 @@ Assuming this app should run in browser environment:
         connected: true,
 
         // Currently active Remote View sessions, key is an `origin` of tab
-        // item. Multiple tabs with same origin can point to single Remote View
+        // item. Multiple tabs with same origin points to single Remote View
         // session
         sessions: new Map().set('http://localhost:8080', {
             // current session connection state,
