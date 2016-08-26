@@ -23,6 +23,9 @@ Assuming this app should run in browser environment:
         // LiveStyle server/app
         client: new LiveStyleClient(),
 
+        // Options passed to app factory
+        options: {},
+
         // List of currently opened editors with LiveStyle plugin
         list: new Map().set('editor-id', {
             name: 'Sublime Text',

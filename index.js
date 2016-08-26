@@ -10,7 +10,7 @@ import {forEditor, forBrowser} from './lib/diff';
 import {createSession, closeSession} from './lib/actions/remote-view';
 
 export default function createApp(client, options={}) {
-    var middlewares = [reduxThunk()];
+    var middlewares = [reduxThunk];
     if (options.logger) {
         middlewares.push(reduxLogger({collapsed: true}));
     }
@@ -18,6 +18,7 @@ export default function createApp(client, options={}) {
     // @see README.md for model reference
     var store = createStore(reducers, {
         client,
+        options,
         editors: {
             list: new Map(),
             files: new Set()
