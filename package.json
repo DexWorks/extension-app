@@ -11,8 +11,9 @@
   "dependencies": {
     "condense-patches": "github:livestyle/condense-patches",
     "deep-equal": "github:livestyle/node-deep-equal",
-    "redux": "^3.3.1",
-    "redux-logger": "^2.6.1"
+    "redux": "^3.5.2",
+    "redux-logger": "^2.6.1",
+    "redux-thunk": "^2.1.0"
   },
   "devDependencies": {
     "babel-plugin-transform-node-env-inline": "^6.5.0",

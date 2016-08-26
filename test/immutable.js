@@ -73,6 +73,37 @@ describe('Immutable', () => {
 		assert(im.updated);
 	});
 
+	it('delete', () => {
+		var obj = {
+			a: {b: 1},
+			c: {d: {e: 2}},
+			f: {g: {h: 3}, j: ['a', 'b', 'c']}
+		};
+		var im = immutable(freeze(obj));
+
+		im.delete('c.d.e');
+		assert.deepEqual(im.get('c.d'), {});
+
+		im.delete('a');
+		assert.deepEqual(Object.keys(im.value), ['c', 'f']);
+
+		im.delete('f.j.1');
+		assert.deepEqual(im.get('f.j'), ['a', 'c']);
+
+		// deleting non-existing key
+		im.delete('foo.bar.baz');
+		assert.equal(im.get('foo'), undefined);
+		im.delete('f.g.foo');
+
+
+		// all other objects should remain as is
+		assert.equal(im.get('f.g'), obj.f.g);
+		assert.equal(im.get('f.g.h'), obj.f.g.h);
+		assert.notEqual(im.get('f'), obj.f);
+
+		assert(im.updated);
+	});
+
 	it('assign', () => {
 		var obj = {
 			a: {b: 1},

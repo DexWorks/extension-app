@@ -19,6 +19,10 @@ Assuming this app should run in browser environment:
     // Contains data about all LiveStyle-supported editors
     // currently opened by user
     editors: {
+        // instance of LiveStyle websocket client used to talk with
+        // LiveStyle server/app
+        client: new LiveStyleClient(),
+
         // List of currently opened editors with LiveStyle plugin
         list: new Map().set('editor-id', {
             name: 'Sublime Text',

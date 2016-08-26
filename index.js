@@ -1,21 +1,23 @@
 'use strict';
 
 import {createStore, applyMiddleware} from 'redux';
-import createLogger from 'redux-logger';
+import reduxLogger from 'redux-logger';
+import reduxThunk from 'redux-thunk';
 import reducers from './lib/reducers';
 import listeners from './lib/listeners';
 import {deepGet, iterate} from './lib/utils';
 import {forEditor, forBrowser} from './lib/diff';
-import {createSession, destroySession} from './lib/remote-view';
+import {createSession, closeSession} from './lib/actions/remote-view';
 
 export default function createApp(client, options={}) {
-    var middlewares = [];
+    var middlewares = [reduxThunk()];
     if (options.logger) {
-        middlewares.push(createLogger({collapsed: true}));
+        middlewares.push(reduxLogger({collapsed: true}));
     }
 
     // @see README.md for model reference
     var store = createStore(reducers, {
+        client,
         editors: {
             list: new Map(),
             files: new Set()
@@ -124,11 +126,11 @@ export default function createApp(client, options={}) {
         },
 
         createRemoteViewSession(data) {
-            return createSession(client, data);
+            return this.dispatch(createSession(data));
         },
 
-        destroyRemoteViewSession(localSite) {
-            return destroySession(client, localSite);
+        closeRemoteViewSession(origin) {
+            return this.dispatch(closeSession(origin));
         },
 
         destroy() {
