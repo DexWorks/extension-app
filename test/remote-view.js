@@ -162,11 +162,12 @@ describe('Remote View', () => {
 
     describe('actions', () => {
         const origin = 'http://localhost:8082';
+        const auth = 'sample-auth';
         // setup event routing
         const setupClient = client =>
             client.on('rv-create-session', data => {
                 let response = {origin: data.origin};
-                if (!data.authorization) {
+                if (data.authorization !== auth) {
                     response.error = 'No auth header';
                 } else {
                     Object.assign(response, {
@@ -200,7 +201,38 @@ describe('Remote View', () => {
 
             app.createRemoteViewSession({
                 origin,
-                authorization: 'sample-auth'
+                authorization: auth
+            });
+        });
+
+        it('start session with delegate', done => {
+            let client = setupClient(clientShim());
+            let app = appFactory(client, {autoRemoveRVError: 200});
+
+            const updates = [];
+            app.subscribe(sessions => {
+                updates.push(sessions.get(origin));
+
+                if (updates.length === 2) {
+                    assert.equal(updates[0].state, REMOTE_VIEW.STATE_PENDING);
+                    assert.equal(updates[1].state, REMOTE_VIEW.STATE_CONNECTED);
+
+                    assert.equal(updates[0].origin, origin);
+                    assert.equal(updates[1].localSite, origin);
+
+                    done();
+                }
+            }, 'remoteView.sessions');
+
+            app.createRemoteViewSession({
+                origin,
+                delegate(start, data) {
+                    if (data.delegate) {
+                        return Promise.reject(new Error('Should delete "delegate" method from payload'))
+                    }
+
+                    return start(Object.assign({}, data, {authorization: auth}));
+                }
             });
         });
 
